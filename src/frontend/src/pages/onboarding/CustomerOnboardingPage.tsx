@@ -39,7 +39,7 @@ export default function CustomerOnboardingPage() {
               <Droplets className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Welcome to AquaFlow</CardTitle>
+          <CardTitle className="text-2xl">Welcome to Blue Nile</CardTitle>
           <CardDescription>Let's set up your customer profile</CardDescription>
         </CardHeader>
         <CardContent>

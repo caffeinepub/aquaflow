@@ -15,10 +15,25 @@ export function useGetCallerUserProfile() {
     retry: false,
   });
 
+  // Enhanced state reporting for deterministic bootstrap routing
+  const isActorReady = !!actor && !actorFetching;
+  const isProfileFetchInProgress = isActorReady && query.isLoading;
+  const isProfileFetched = isActorReady && query.isFetched;
+  const hasProfile = isProfileFetched && query.data !== null;
+  const hasNoProfile = isProfileFetched && query.data === null;
+  const hasFetchError = isProfileFetched && !!query.error;
+
   return {
     ...query,
     isLoading: actorFetching || query.isLoading,
-    isFetched: !!actor && query.isFetched,
+    isFetched: isActorReady && query.isFetched,
+    // Enhanced state flags for bootstrap decision-making
+    isActorReady,
+    isProfileFetchInProgress,
+    isProfileFetched,
+    hasProfile,
+    hasNoProfile,
+    hasFetchError,
   };
 }
 

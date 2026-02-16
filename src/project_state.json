@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 9,
-  "summary": "AquaFlow: full-stack responsive web app for a water supply company with secure authentication and role-based access (Customer, Salesman, Admin), dashboards for deliveries/sales/messaging, real-time cross-panel updates, notifications, and professionally formatted PDF report generation.",
+  "projectStateVersion": 17,
+  "summary": "Rebrand AquaFlow to “blue nile” across the app, including app name, logo, and all visible branding.",
   "architectural_notes": [
     "Use a modern web stack: React/Next.js frontend; Node.js/Express or Django backend; MySQL/PostgreSQL database.",
     "Implement secure auth with password hashing and JWT or server sessions; enforce RBAC via authorization middleware.",
@@ -18,7 +18,9 @@
     "Default values are not set to 0; fields require manual input but do not initialize correctly.",
     "Login feature is missing or not working as expected (user requested adding login).",
     "Role selection still does not work; user is forced into Customer role on login despite role selection feature.",
-    "App gets stuck on “Loading AquaFlow…” after login (identity/profile load never completes; onboarding/profile save likely looping)."
+    "App gets stuck on “Loading AquaFlow…” after login (identity/profile load never completes; onboarding/profile save likely looping).",
+    "Rebrand/build is not going live (changes not reflected or deployment not updating as expected).",
+    "After latest deployment, site is still stuck on the loading page (build may not be loading correctly in browser)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -157,6 +159,118 @@
         "REQ-19"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-all-user-facing-product-name-branding-text-from-aquaflow-to-blue-nile-across-the-frontend-ui-login-onboarding-dashboards-shell-header-footer-loading-screens-reports-screens-and-any-error-screens-ensuring-capitalization-matches-exactly-blue-nile",
+      "title": "Update all user-facing product name/branding text from \"AquaFlow\" to \"Blue Nile\" across the frontend UI (login, onboarding, dashboards shell/header/footer, loading screens, reports screens, and any error screens), ensuring capitalization matches exactly (\"Blue Nile\").",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-site-metadata-to-reflect-the-new-brand-change-the-html-document-title-and-any-meta-description-text-that-refers-to-aquaflow-update-the-favicon-reference-to-use-the-new-blue-nile-icon-asset",
+      "title": "Update site metadata to reflect the new brand: change the HTML document title and any meta description text that refers to AquaFlow; update the favicon reference to use the new Blue Nile icon asset.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-all-aquaflow-logo-icon-usage-in-the-ui-with-new-blue-nile-logo-icon-assets-including-image-src-paths-and-alt-text-e-g-in-the-app-shell-header-mobile-menu-and-the-login-page-hero",
+      "title": "Replace all AquaFlow logo/icon usage in the UI with new Blue Nile logo/icon assets, including image src paths and alt text (e.g., in the app shell header/mobile menu and the login page hero).",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-report-generation-branding-so-generated-report-html-uses-blue-nile-branding-text-replacing-aquaflow-and-does-not-include-aquaflow-specific-wording-on-the-reports-page",
+      "title": "Update report generation branding so generated report HTML uses \"Blue Nile\" branding text (replacing \"AquaFlow\") and does not include AquaFlow-specific wording on the Reports page.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-the-new-blue-nile-brand-images-as-static-assets-under-frontend-public-assets-generated-and-update-all-references-to-use-these-new-filenames-do-not-serve-generated-images-via-the-backend",
+      "title": "Add the new Blue Nile brand images as static assets under frontend/public/assets/generated and update all references to use these new filenames (do not serve generated images via the backend).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-existing-blue-nile-logo-icon-asset-so-it-looks-professional-and-visually-appealing-clean-water-inspired-mark-balanced-geometry-crisp-edges-legible-at-small-sizes-while-keeping-the-same-filename-used-throughout-the-app",
+      "title": "Update the existing Blue Nile logo icon asset so it looks professional and visually appealing (clean water-inspired mark, balanced geometry, crisp edges, legible at small sizes), while keeping the same filename used throughout the app.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-logo-presentation-in-the-authenticated-app-shell-header-and-mobile-sheet-header-to-make-the-logo-brand-lockup-look-polished-consistent-sizing-alignment-spacing-and-rendering-without-changing-the-underlying-routing-or-navigation-behavior",
+      "title": "Adjust logo presentation in the authenticated app shell header and mobile sheet header to make the logo/brand lockup look polished (consistent sizing, alignment, spacing, and rendering), without changing the underlying routing or navigation behavior.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-the-login-page-hero-logo-presentation-so-the-blue-nile-logo-looks-polished-and-consistent-with-the-rest-of-the-app-icon-treatment-shadows-border-radius-and-any-decorative-overlay-elements",
+      "title": "Adjust the login page hero/logo presentation so the Blue Nile logo looks polished and consistent with the rest of the app (icon treatment, shadows, border radius, and any decorative overlay elements).",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-report-html-generator-header-so-the-blue-nile-logo-branding-in-downloaded-reports-looks-professional-and-aligns-with-the-updated-logo-asset-use-the-existing-icon-asset-in-the-report-header-where-appropriate-and-keep-all-user-facing-text-in-english",
+      "title": "Update the report HTML generator header so the Blue Nile logo/branding in downloaded reports looks professional and aligns with the updated logo asset (use the existing icon asset in the report header where appropriate, and keep all user-facing text in English).",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-any-user-facing-references-to-the-application-domain-website-name-so-it-displays-as-blue-nile-english-text-including-any-footer-header-copy-or-links-that-embed-the-current-hostname-or-domain-label",
+      "title": "Update any user-facing references to the application domain/website name so it displays as \"Blue Nile\" (English text), including any footer/header copy or links that embed the current hostname or domain label.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-frontend-works-correctly-when-served-from-a-new-blue-nile-domain-by-removing-or-avoiding-any-hardcoded-absolute-origins-hostnames-in-routing-links-and-authentication-redirects-use-relative-urls-where-possible",
+      "title": "Ensure the frontend works correctly when served from a new Blue Nile domain by removing or avoiding any hardcoded absolute origins/hostnames in routing, links, and authentication redirects; use relative URLs where possible.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-prevent-the-app-from-getting-stuck-indefinitely-on-the-global-loading-screen-by-adding-a-deterministic-timeout-and-recovery-actions-in-the-root-auth-bootstrap-flow-the-screen-that-renders-loading-blue-nile",
+      "title": "Prevent the app from getting stuck indefinitely on the global loading screen by adding a deterministic timeout and recovery actions in the root auth bootstrap flow (the screen that renders \"Loading Blue Nile...\").",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-authenticated-bootstrap-routing-resilient-when-the-user-is-authenticated-but-the-backend-actor-profile-query-is-not-available-yet-so-the-ui-does-not-remain-blank-or-stuck-and-instead-displays-an-actionable-error-retry-state",
+      "title": "Make the authenticated bootstrap routing resilient when the user is authenticated but the backend actor/profile query is not available yet, so the UI does not remain blank or stuck and instead displays an actionable error/retry state.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-current-user-profile-query-plumbing-so-it-reports-fetch-readiness-and-failures-consistently-to-the-router-bootstrap-layer-enabling-the-ui-to-decide-between-loading-onboarding-redirect-app-shell-and-error-recovery-without-oscillation",
+      "title": "Update the current-user profile query plumbing so it reports fetch readiness and failures consistently to the router/bootstrap layer, enabling the UI to decide between loading, onboarding redirect, app shell, and error recovery without oscillation.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -243,10 +357,28 @@
         "REQ-20"
       ],
       "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Rebrand AquaFlow to “blue nile”: update app name, logo, and all UI/UX branding references across the product (auth, onboarding, dashboards, PDFs/reports, notifications, and any headers/footers/metadata).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Improve the Blue Nile logo so it looks professional and visually appealing across the app (icon, header/app shell, login/onboarding, and PDFs if applicable).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Change the app/domain name to Blue Nile (update domain configuration/DNS/hosting settings so the product is accessible under the Blue Nile domain).",
+      "reqIds": [],
+      "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "AquaFlow",
+  "projectName": "blue nile",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

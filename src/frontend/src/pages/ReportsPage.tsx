@@ -88,7 +88,7 @@ export default function ReportsPage() {
                 Report Contents
               </h3>
               <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
-                <li>AquaFlow company logo and branding</li>
+                <li>Blue Nile company logo and branding</li>
                 <li>Explicit date range for the report period</li>
                 <li>Detailed delivery and sales data</li>
                 <li>Computed totals and summaries</li>

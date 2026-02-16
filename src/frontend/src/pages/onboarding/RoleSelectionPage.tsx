@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Droplets, Truck, Shield, AlertCircle } from 'lucide-react';
 import { useSaveCallerUserProfile } from '../../hooks/useQueries';
 import { AppRole } from '../../backend';
+import { BRANDING } from '../../config/branding';
 
 export default function RoleSelectionPage() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function RoleSelectionPage() {
       <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-            Welcome to AquaFlow
+            Welcome to {BRANDING.appName}
           </h1>
           <p className="text-muted-foreground text-lg">
             Let's set up your account

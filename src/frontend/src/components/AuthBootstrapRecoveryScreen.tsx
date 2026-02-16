@@ -4,66 +4,49 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, RefreshCw, LogOut } from 'lucide-react';
+import { Clock, RefreshCw, LogOut } from 'lucide-react';
+import { BRANDING } from '../config/branding';
 
-interface AuthProfileLoadErrorScreenProps {
-  error: Error | null;
+interface AuthBootstrapRecoveryScreenProps {
+  onRetry: () => void;
 }
 
-export default function AuthProfileLoadErrorScreen({ error }: AuthProfileLoadErrorScreenProps) {
+export default function AuthBootstrapRecoveryScreen({ onRetry }: AuthBootstrapRecoveryScreenProps) {
   const { clear } = useInternetIdentity();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleRetry = () => {
-    queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+    onRetry();
   };
 
-  const handleLogout = async () => {
+  const handleClearSession = async () => {
     await clear();
     queryClient.clear();
     navigate({ to: '/login', replace: true });
   };
-
-  const errorMessage = error?.message || 'An unknown error occurred';
-  const sanitizedMessage = errorMessage.includes('Unauthorized') 
-    ? 'You do not have permission to access this profile.'
-    : errorMessage.includes('Actor not available')
-    ? 'Unable to connect to the backend service.'
-    : 'Failed to load your profile.';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="bg-destructive/10 rounded-full p-4">
-              <AlertCircle className="h-12 w-12 text-destructive" />
+            <div className="bg-warning/10 rounded-full p-4">
+              <Clock className="h-12 w-12 text-warning" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Profile Load Error</CardTitle>
+          <CardTitle className="text-2xl">Loading Timeout</CardTitle>
           <CardDescription>
-            We encountered a problem loading your profile
+            {BRANDING.appName} is taking longer than expected to load
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
+          <Alert>
+            <Clock className="h-4 w-4" />
             <AlertDescription className="ml-2">
-              {sanitizedMessage}
+              The application bootstrap process has exceeded the expected time limit. This may be due to network issues or backend unavailability.
             </AlertDescription>
           </Alert>
-
-          {error && (
-            <details className="text-xs text-muted-foreground">
-              <summary className="cursor-pointer hover:text-foreground">
-                Technical details
-              </summary>
-              <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
-                {errorMessage}
-              </pre>
-            </details>
-          )}
 
           <div className="flex flex-col gap-2 pt-2">
             <Button
@@ -72,17 +55,21 @@ export default function AuthProfileLoadErrorScreen({ error }: AuthProfileLoadErr
               variant="default"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              Retry Loading Profile
+              Retry
             </Button>
             <Button
-              onClick={handleLogout}
+              onClick={handleClearSession}
               className="w-full"
               variant="outline"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Log Out
+              Clear Session & Log Out
             </Button>
           </div>
+
+          <p className="text-xs text-muted-foreground text-center">
+            If the problem persists, please try again later or contact support.
+          </p>
         </CardContent>
       </Card>
     </div>

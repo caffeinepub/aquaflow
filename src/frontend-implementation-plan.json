@@ -1,67 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix infinite loading by deterministic post-login routing and immediate role-based profile save",
+  "title": "Deterministic auth/profile bootstrap timeout and recovery to prevent infinite loading",
   "requirements": [
     {
-      "id": "REQ-17",
-      "summary": "Ensure the app always exits the post-login loading state and shows deterministic routing or a recoverable error state based on identity + profile existence.",
+      "id": "REQ-32",
+      "summary": "Add a deterministic timeout to the root auth bootstrap loading screen and provide an automatic recovery UI with Retry and Clear Session actions.",
       "acceptanceCriteria": [
-        "After a successful Internet Identity login, the app does not remain on “Loading AquaFlow…” indefinitely.",
-        "If the caller has no saved profile, the user is shown Role Selection (not a blank screen) within a reasonable time after login completes.",
-        "If any profile-fetch error occurs, the user sees a clear error state with a way to recover (e.g., retry profile load and/or log out), rather than being stuck on a spinner."
+        "If the app remains in the global loading state for longer than a fixed threshold (e.g., 10–15 seconds), it must automatically switch to a non-loading recovery screen instead of spinning forever.",
+        "The recovery screen must include at least: (1) a \"Retry\" action that re-attempts profile loading, and (2) a \"Log out\" / \"Clear session\" action that clears the Internet Identity session and returns the user to /login.",
+        "User-facing text on the loading/recovery screen must be in English and must use the current branding name \"Blue Nile\".",
+        "A user who previously experienced an infinite loading screen can always reach either the Login page or the Onboarding page using the provided recovery actions (no dead-end state)."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
+          "operation": "create",
+          "description": "Create a dedicated bootstrap recovery screen shown after a global bootstrap timeout. Use shadcn-ui composed components (e.g., Card, Alert, Button) to display English messaging referencing the Blue Nile branding, plus actions: Retry (invalidate/refetch current user profile query) and Clear session (call Internet Identity clear, clear React Query cache, and navigate to /login). Verify the component's usage instructions before implementing."
+        },
+        {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update RootComponent and routing guards to (a) avoid indefinite \"Loading AquaFlow...\" by adding a bounded loading fallback, (b) surface a clear English error UI when getCallerUserProfile fails (with Retry + Logout actions), and (c) deterministically continue routing once identity is available and the profile query is fetched (including the null-profile case). Use the authorization component’s frontend guidance for dependency-aware profile loading state (actor + query) and for handling backend trap errors gracefully; verify the component's usage instructions before implementing."
-        },
+          "description": "Update the RootComponent global bootstrap flow (\"Loading Blue Nile...\") to start a deterministic timer (10–15s) whenever it enters the global loading state; when the timer elapses, automatically render AuthBootstrapRecoveryScreen instead of spinning indefinitely. Wire Retry to reset the timeout state and trigger a fresh profile-load attempt; wire Clear session to always navigate the user to /login. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "summary": "Ensure authenticated bootstrap routing shows an actionable error/retry state when the actor/profile query is not ready or fails, instead of blank/stuck UI.",
+      "acceptanceCriteria": [
+        "When the user is authenticated but the profile cannot be fetched (e.g., backend not reachable, actor not initialized), the app must show an error state (e.g., reuse the existing profile-load error screen pattern) with a retry option rather than staying on an endless spinner.",
+        "Retry must trigger a fresh attempt to fetch the caller profile (e.g., invalidate/refetch the current user profile query).",
+        "Logging out from this error state must clear the identity and leave the user on /login (or able to navigate to /login) without re-entering the same stuck loading state immediately."
+      ],
+      "file_operations": [
         {
           "path": "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-          "operation": "create",
-          "description": "Create a small reusable error screen component (English UI text) used during auth/profile bootstrap that shows: a failure message, the underlying error string (sanitized), and buttons for Retry profile load and Logout (clearing cached queries). Ensure it can be rendered from App.tsx without editing immutable hook files. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "summary": "Route users without a saved profile to the dedicated /onboarding role-selection route immediately after login, and route users with profiles directly to their role dashboards.",
-      "acceptanceCriteria": [
-        "When identity becomes available and no profile exists, navigation goes to /onboarding.",
-        "Users with an existing profile are routed directly to the correct role dashboard (/dashboard/customer | /dashboard/salesman | /dashboard/admin)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LoginPage.tsx",
           "operation": "modify",
-          "description": "Change post-login navigation so that when identity is present and getCallerUserProfile returns null, the user is navigated to /onboarding (not /). Keep existing dashboard routing for users with an existing profile. Ensure navigation cannot loop between /login and / by using deterministic conditions and (where supported) replace-style navigation. Verify the component's usage instructions before implementing."
+          "description": "Enhance the existing profile-load error UI so both Retry and Log Out are fully actionable from any bootstrap failure state: Retry should invalidate/refetch the current user profile query; Log Out should call Internet Identity clear, clear React Query cache, and navigate to /login to avoid returning to a blank/stuck state. Keep all user-facing text in English. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update ProfileRequiredRoute (and any other redirects for missing profiles) to route to /onboarding instead of /. Ensure index route (/) no longer acts as the primary place where role selection is rendered after login, and that missing-profile access to protected dashboard routes deterministically redirects to /onboarding. Verify the component's usage instructions before implementing."
+          "description": "Harden routing components (RootComponent/ProtectedRoute/ProfileRequiredRoute/IndexComponent) so they never return a blank null screen during authenticated bootstrap uncertainty (e.g., actor not yet available). Reuse AuthProfileLoadErrorScreen (or the new AuthBootstrapRecoveryScreen for timeouts) to show actionable Retry/Log Out UI rather than endless spinners or empty renders. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-19",
-      "summary": "Make Role Selection immediately attempt to save a profile with the selected role and route to the correct dashboard on success, while handling admin rejection and other errors without getting stuck.",
+      "id": "REQ-34",
+      "summary": "Standardize current-user profile query state reporting so the router/bootstrap can deterministically choose between loading, onboarding redirect, app shell, and error recovery.",
       "acceptanceCriteria": [
-        "Selecting Customer or Salesman on Role Selection triggers a save profile mutation immediately and, on success, routes to the matching dashboard.",
-        "If Admin is selected but the backend rejects self-assignment, the UI shows a clear error (English) and does not get stuck loading; the user remains able to choose another role.",
-        "After the immediate-save flow completes successfully, subsequent profile fetches return the saved profile and the app renders the authenticated AppShell experience."
+        "The bootstrap layer (App routing/root component) can reliably distinguish between: (1) still initializing Internet Identity, (2) authenticated + profile fetch in progress, (3) authenticated + no profile exists, (4) authenticated + profile exists, and (5) authenticated + profile fetch failed.",
+        "Authenticated users with no saved profile are redirected to /onboarding once the system has enough information to decide (no infinite loops).",
+        "Authenticated users with an existing profile are routed into the authenticated app shell/dashboards once fetched (no infinite loops)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/onboarding/RoleSelectionPage.tsx",
+          "path": "frontend/src/hooks/useCurrentUser.ts",
           "operation": "modify",
-          "description": "Rebuild RoleSelectionPage to perform the immediate-save flow: collect the minimal required profile fields (including name) on this page, then on role selection call saveCallerUserProfile with the chosen AppRole and name, and navigate to the correct dashboard on success. Provide an English inline error state for rejected admin selection (and other save failures) while keeping the user on role selection and allowing another choice; also show a non-stuck pending state per selection. Use the authorization component’s frontend guidance for calling saveCallerUserProfile and handling authorization trap errors gracefully; verify the component's usage instructions before implementing."
+          "description": "Update useGetCallerUserProfile to expose consistent readiness/phase flags to the bootstrap layer (e.g., actor dependency readiness, fetch-in-progress vs not-started, fetched-success with null vs non-null, and failure). Ensure the hook remains compatible with React Query and avoids oscillation by clearly separating actor readiness from profile fetch completion. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Adjust the saveCallerUserProfile mutation error mapping so the UI can reliably detect/display an English, user-actionable message specifically for admin self-assignment rejection (and general auth errors) without leaving the page in a loading state. Keep query invalidation for ['currentUserProfile'] on success so subsequent profile loads resolve to the saved profile. Verify the component's usage instructions before implementing."
+          "description": "Refactor bootstrap decision-making to use the enhanced useGetCallerUserProfile state so it can deterministically select among: II initializing, authenticated+fetching, authenticated+no profile (redirect /onboarding), authenticated+has profile (render AppShell), and authenticated+failed (render error screen). Ensure redirects happen only once the system is ready to decide to prevent infinite loops. Verify the component's usage instructions before implementing."
         }
       ]
     }

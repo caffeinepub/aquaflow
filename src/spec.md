@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the infinite “Loading AquaFlow…” state after Internet Identity login by making profile-check + onboarding routing deterministic and recoverable, and by ensuring profile lookup for authenticated users without a profile does not trap.
+**Goal:** Eliminate the post-deployment infinite “Loading Blue Nile…” state by adding deterministic timeouts, recovery UI, and more resilient auth/profile bootstrapping and routing.
 
 **Planned changes:**
-- Update frontend post-login routing logic to always exit the loading state and route based on (a) identity availability and (b) whether a user profile exists.
-- Route users without an existing profile to the dedicated onboarding route (`/onboarding`) after login, and route users with a profile directly to their role dashboard (`/dashboard/customer` | `/dashboard/salesman` | `/dashboard/admin`).
-- Adjust role selection to immediately attempt to save/create the user profile with the selected role, then navigate to the matching dashboard on success; show clear English errors (including Admin self-assignment rejection) without getting stuck.
-- Add clear frontend error states for profile-fetch failures with a recovery path (e.g., retry and/or log out) instead of indefinite spinners.
-- Update backend `getCallerUserProfile` behavior so authenticated callers with no saved profile receive `null` (or equivalent) rather than an authorization trap, while keeping anonymous restrictions and Admin self-assignment protections on profile creation.
+- Add a fixed-duration timeout to the root/global auth bootstrap loading flow; after the threshold, switch from the spinner (“Loading Blue Nile…”) to a recovery screen rather than loading indefinitely.
+- Implement recovery actions on the timeout/error screen: “Retry” (re-attempt profile loading) and “Log out / Clear session” (clear Internet Identity session and route to `/login`), ensuring no dead-end state.
+- Make authenticated bootstrap routing resilient when authenticated but actor/profile fetch is unavailable: show an actionable error state with retry/logout instead of a blank or endless loading UI.
+- Update the current-user profile query plumbing to consistently surface readiness/failure states to the router/bootstrap layer so it can reliably choose between: initializing identity, fetching profile, no profile (redirect to `/onboarding`), profile exists (enter app shell), or profile fetch failed (show recovery/error), without oscillation or loops.
 
-**User-visible outcome:** After logging in, users no longer get stuck on “Loading AquaFlow…”. New users are sent to Role Selection to pick a role and save a profile immediately, then land on the correct dashboard; existing users go straight to their dashboard, and any profile load/save errors show actionable recovery options.
+**User-visible outcome:** If loading takes too long or profile fetch fails, users see a clear recovery screen with Retry and Log out/Clear session actions, and can always reach either `/login` or `/onboarding`/the app without getting stuck on an infinite loading screen.

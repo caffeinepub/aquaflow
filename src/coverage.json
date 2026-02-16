@@ -1,74 +1,66 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T08:02:38.176Z",
+  "generatedAt": "2026-02-16T08:50:13.968Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
+    "total": 3,
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-17",
-        "summary": "Eliminate the infinite “Loading AquaFlow…” screen after Internet Identity login by ensuring the app always exits the loading state and routes the user deterministically based on: (1) authenticated identity presence and (2) whether a user profile exists.",
+        "id": "REQ-32",
+        "summary": "Prevent the app from getting stuck indefinitely on the global loading screen by adding a deterministic timeout and recovery actions in the root auth bootstrap flow (the screen that renders \"Loading Blue Nile...\").",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/AuthProfileLoadErrorScreen.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/AuthProfileLoadErrorScreen.tsx"
-        ]
-      },
-      {
-        "id": "REQ-18",
-        "summary": "Change post-login routing so that after Internet Identity login completes, users without a saved profile are routed to the dedicated role selection route (/onboarding) rather than relying on the index route (/).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
           "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-19",
-        "summary": "Update the role selection flow so that choosing Customer/Salesman/Admin immediately attempts to create/save a user profile (using the selected role) and then routes to the correct dashboard when save succeeds.",
+        "id": "REQ-33",
+        "summary": "Make the authenticated bootstrap routing resilient when the user is authenticated but the backend actor/profile query is not available yet, so the UI does not remain blank or stuck and instead displays an actionable error/retry state.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/onboarding/RoleSelectionPage.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/onboarding/RoleSelectionPage.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-20",
-        "summary": "Adjust backend profile retrieval behavior so an authenticated (non-anonymous) caller who has not yet created a profile can safely check for a profile without causing an authorization trap that prevents the frontend from completing the login/onboarding routing.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
+        "id": "REQ-34",
+        "summary": "Update the current-user profile query plumbing so it reports fetch readiness and failures consistently to the router/bootstrap layer, enabling the UI to decide between loading, onboarding redirect, app shell, and error recovery without oscillation.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useCurrentUser.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useCurrentUser.ts",
+          "frontend/src/App.tsx"
+        ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/App.tsx",
+    "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
     "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/LoginPage.tsx",
-    "frontend/src/pages/onboarding/RoleSelectionPage.tsx",
+    "frontend/src/hooks/useCurrentUser.ts",
+    "frontend/src/utils/urlParams.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

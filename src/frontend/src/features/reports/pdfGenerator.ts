@@ -1,4 +1,5 @@
 import { toast } from 'sonner';
+import { BRANDING } from '../../config/branding';
 
 interface ReportData {
   title: string;
@@ -6,9 +7,25 @@ interface ReportData {
   data: Array<{ label: string; value: string }>;
 }
 
-export function generatePDF(reportData: ReportData) {
-  // Create a simple HTML-based PDF generation
-  // In production, you would use a library like jsPDF or pdfmake
+// Convert image to base64 data URL for embedding in standalone HTML
+async function getLogoDataUrl(): Promise<string> {
+  try {
+    const response = await fetch('/assets/generated/blue-nile-icon.dim_256x256.png');
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error('Failed to load logo for report:', error);
+    return '';
+  }
+}
+
+export async function generatePDF(reportData: ReportData) {
+  const logoDataUrl = await getLogoDataUrl();
   
   const htmlContent = `
     <!DOCTYPE html>
@@ -24,16 +41,33 @@ export function generatePDF(reportData: ReportData) {
           padding: 20px;
         }
         .header {
-          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
           margin-bottom: 40px;
           border-bottom: 3px solid #0d9488;
           padding-bottom: 20px;
         }
-        .logo {
-          font-size: 32px;
+        .header-logo {
+          width: 48px;
+          height: 48px;
+          object-fit: contain;
+        }
+        .header-text {
+          text-align: left;
+        }
+        .logo-title {
+          font-size: 28px;
           font-weight: bold;
           color: #0d9488;
-          margin-bottom: 10px;
+          margin: 0;
+          line-height: 1.2;
+        }
+        .logo-subtitle {
+          font-size: 14px;
+          color: #666;
+          margin: 4px 0 0 0;
         }
         .title {
           font-size: 24px;
@@ -74,8 +108,11 @@ export function generatePDF(reportData: ReportData) {
     </head>
     <body>
       <div class="header">
-        <div class="logo">AquaFlow</div>
-        <div>Water Supply Management System - Dubai, UAE</div>
+        ${logoDataUrl ? `<img src="${logoDataUrl}" alt="${BRANDING.appName}" class="header-logo" />` : ''}
+        <div class="header-text">
+          <h1 class="logo-title">${BRANDING.appName}</h1>
+          <p class="logo-subtitle">${BRANDING.tagline} - ${BRANDING.location}</p>
+        </div>
       </div>
       
       <div class="title">${reportData.title}</div>

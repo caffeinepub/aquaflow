@@ -2,7 +2,7 @@ import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useCurrentUser';
 import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet, useNavigate } from '@tanstack/react-router';
 import { ThemeProvider } from 'next-themes';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import LoginPage from './pages/LoginPage';
 import RoleSelectionPage from './pages/onboarding/RoleSelectionPage';
 import CustomerOnboardingPage from './pages/onboarding/CustomerOnboardingPage';
@@ -14,52 +14,100 @@ import AdminDashboardPage from './pages/dashboards/AdminDashboardPage';
 import ReportsPage from './pages/ReportsPage';
 import AppShell from './components/AppShell';
 import AuthProfileLoadErrorScreen from './components/AuthProfileLoadErrorScreen';
+import AuthBootstrapRecoveryScreen from './components/AuthBootstrapRecoveryScreen';
 import { Toaster } from '@/components/ui/sonner';
 import { AppRole } from './backend';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { BRANDING } from './config/branding';
+import { useQueryClient } from '@tanstack/react-query';
+
+const BOOTSTRAP_TIMEOUT_MS = 12000; // 12 seconds
 
 function RootComponent() {
   const { identity, isInitializing } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched, error } = useGetCallerUserProfile();
+  const { 
+    data: userProfile, 
+    isLoading: profileLoading, 
+    isFetched, 
+    error,
+    isActorReady,
+    isProfileFetchInProgress,
+    isProfileFetched,
+    hasProfile,
+    hasNoProfile,
+    hasFetchError
+  } = useGetCallerUserProfile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const [bootstrapTimedOut, setBootstrapTimedOut] = useState(false);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   const isAuthenticated = !!identity;
 
-  // Handle profile fetch errors
+  // Deterministic bootstrap timeout mechanism
   useEffect(() => {
-    if (isAuthenticated && isFetched && error) {
-      // Profile fetch failed - show error screen
-      console.error('Profile fetch error:', error);
+    const shouldShowLoading = isInitializing || (isAuthenticated && !isProfileFetched);
+
+    if (shouldShowLoading) {
+      // Start timeout timer
+      const id = setTimeout(() => {
+        setBootstrapTimedOut(true);
+      }, BOOTSTRAP_TIMEOUT_MS);
+      setTimeoutId(id);
+
+      return () => {
+        clearTimeout(id);
+      };
+    } else {
+      // Clear timeout if we're no longer loading
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        setTimeoutId(null);
+      }
+      setBootstrapTimedOut(false);
     }
-  }, [isAuthenticated, isFetched, error]);
+  }, [isInitializing, isAuthenticated, isProfileFetched, timeoutId]);
 
   // Route authenticated users without profiles to onboarding
   useEffect(() => {
-    if (isAuthenticated && isFetched && !userProfile && !error) {
+    if (isAuthenticated && hasNoProfile) {
       navigate({ to: '/onboarding', replace: true });
     }
-  }, [isAuthenticated, isFetched, userProfile, error, navigate]);
+  }, [isAuthenticated, hasNoProfile, navigate]);
 
-  // Show loading only during initialization or initial profile fetch
-  if (isInitializing || (isAuthenticated && profileLoading && !isFetched)) {
+  // Handle bootstrap timeout - show recovery screen
+  if (bootstrapTimedOut) {
+    return (
+      <AuthBootstrapRecoveryScreen
+        onRetry={() => {
+          setBootstrapTimedOut(false);
+          queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+        }}
+      />
+    );
+  }
+
+  // Show loading during initialization or initial profile fetch
+  if (isInitializing || (isAuthenticated && isProfileFetchInProgress)) {
     return (
       <div className="flex h-screen items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center">
           <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-teal-200 border-t-teal-600 mx-auto"></div>
-          <p className="text-muted-foreground">Loading AquaFlow...</p>
+          <p className="text-muted-foreground">Loading {BRANDING.appName}...</p>
         </div>
       </div>
     );
   }
 
   // Show error screen if profile fetch failed
-  if (isAuthenticated && isFetched && error) {
+  if (isAuthenticated && hasFetchError) {
     return <AuthProfileLoadErrorScreen error={error} />;
   }
 
   // Show app shell if user has a profile
-  if (isFetched && userProfile) {
+  if (hasProfile) {
     return <AppShell />;
   }
 
@@ -95,16 +143,31 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function ProfileRequiredRoute({ children }: { children: React.ReactNode }) {
-  const { data: userProfile, isLoading, isFetched } = useGetCallerUserProfile();
+  const { 
+    data: userProfile, 
+    isLoading, 
+    isFetched,
+    isActorReady,
+    isProfileFetched,
+    hasProfile,
+    hasNoProfile,
+    hasFetchError,
+    error
+  } = useGetCallerUserProfile();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isFetched && !userProfile) {
+    if (hasNoProfile) {
       navigate({ to: '/onboarding', replace: true });
     }
-  }, [userProfile, isFetched, navigate]);
+  }, [hasNoProfile, navigate]);
 
-  if (isLoading) {
+  // Show error screen if profile fetch failed
+  if (hasFetchError) {
+    return <AuthProfileLoadErrorScreen error={error} />;
+  }
+
+  if (isLoading || !isProfileFetched) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -123,16 +186,30 @@ function ProfileRequiredRoute({ children }: { children: React.ReactNode }) {
 }
 
 function IndexComponent() {
-  const { data: userProfile, isLoading, isFetched } = useGetCallerUserProfile();
+  const { 
+    data: userProfile, 
+    isLoading, 
+    isFetched,
+    isProfileFetched,
+    hasProfile,
+    hasNoProfile,
+    hasFetchError,
+    error
+  } = useGetCallerUserProfile();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isFetched && !userProfile) {
+    if (hasNoProfile) {
       navigate({ to: '/onboarding', replace: true });
     }
-  }, [isFetched, userProfile, navigate]);
+  }, [hasNoProfile, navigate]);
+
+  // Show error screen if profile fetch failed
+  if (hasFetchError) {
+    return <AuthProfileLoadErrorScreen error={error} />;
+  }
   
-  if (isLoading) {
+  if (isLoading || !isProfileFetched) {
     return (
       <div className="flex h-screen items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center">

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Droplets } from 'lucide-react';
 import { AppRole } from '../backend';
+import { BRANDING } from '../config/branding';
 
 export default function LoginPage() {
   const { login, loginStatus, identity } = useInternetIdentity();
@@ -47,57 +48,57 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
-      <div className="absolute inset-0 bg-[url('/assets/generated/aquaflow-header-bg.dim_1600x400.png')] bg-cover bg-center opacity-10"></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/assets/generated/blue-nile-header-bg.dim_1600x400.png')] bg-cover bg-center opacity-5 dark:opacity-10"></div>
       
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-teal-100 dark:border-teal-900">
-        <CardHeader className="text-center space-y-4">
+        <CardHeader className="text-center space-y-6 pb-4">
           <div className="flex justify-center">
-            <div className="relative">
-              <img 
-                src="/assets/generated/aquaflow-icon.dim_256x256.png" 
-                alt="AquaFlow" 
-                className="h-20 w-20 rounded-full shadow-lg"
-              />
-              <div className="absolute -bottom-1 -right-1 bg-teal-500 rounded-full p-2">
-                <Droplets className="h-5 w-5 text-white" />
+            <div className="relative inline-flex items-center justify-center">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 flex items-center justify-center shadow-lg border border-teal-100 dark:border-teal-800">
+                <img 
+                  src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                  alt={BRANDING.appName}
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <div className="absolute -top-2 -right-2 bg-gradient-to-br from-teal-500 to-cyan-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                <Droplets className="h-3 w-3" />
               </div>
             </div>
           </div>
           <div>
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-              Welcome to AquaFlow
+              {BRANDING.appName}
             </CardTitle>
             <CardDescription className="text-base mt-2">
-              Your trusted water supply management system
+              {BRANDING.tagline}
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground text-center">
-              Sign in securely with Internet Identity to access your dashboard
+            <p className="text-center text-muted-foreground">
+              Secure login with Internet Identity
             </p>
             <Button
               onClick={handleLogin}
               disabled={isLoggingIn}
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-lg"
-              size="lg"
+              className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-6 text-lg shadow-lg"
             >
               {isLoggingIn ? (
                 <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                   Connecting...
                 </>
               ) : (
-                'Sign In with Internet Identity'
+                'Login'
               )}
             </Button>
           </div>
-
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              New to AquaFlow? Sign in to create your account
+              By logging in, you agree to our Terms of Service and Privacy Policy
             </p>
           </div>
         </CardContent>

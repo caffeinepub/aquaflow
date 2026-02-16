@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from '@tanstack/react-router';
+import { Outlet, useNavigate, Link } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from '../hooks/useCurrentUser';
 import { useQueryClient } from '@tanstack/react-query';
@@ -7,6 +7,7 @@ import { Droplets, Home, FileText, LogOut, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 import NotificationsBell from './NotificationsBell';
+import { BRANDING } from '../config/branding';
 
 export default function AppShell() {
   const { clear } = useInternetIdentity();
@@ -22,22 +23,22 @@ export default function AppShell() {
   };
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: Home },
-    { name: 'Reports', href: '/reports', icon: FileText },
+    { name: 'Dashboard', to: '/', icon: Home },
+    { name: 'Reports', to: '/reports', icon: FileText },
   ];
 
   const NavContent = () => (
     <nav className="space-y-1">
       {navigation.map((item) => (
-        <a
+        <Link
           key={item.name}
-          href={item.href}
+          to={item.to}
           className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors"
           onClick={() => setMobileMenuOpen(false)}
         >
           <item.icon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
           <span>{item.name}</span>
-        </a>
+        </Link>
       ))}
     </nav>
   );
@@ -55,22 +56,34 @@ export default function AppShell() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-64">
-                <div className="flex items-center gap-2 mb-6">
-                  <img src="/assets/generated/aquaflow-icon.dim_256x256.png" alt="AquaFlow" className="h-8 w-8" />
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+                    <img 
+                      src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                      alt={BRANDING.appName}
+                      className="w-10 h-10 object-contain"
+                    />
+                  </div>
                   <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-                    AquaFlow
+                    {BRANDING.appName}
                   </span>
                 </div>
                 <NavContent />
               </SheetContent>
             </Sheet>
 
-            <div className="flex items-center gap-2">
-              <img src="/assets/generated/aquaflow-icon.dim_256x256.png" alt="AquaFlow" className="h-8 w-8" />
-              <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent hidden sm:inline">
-                AquaFlow
+            <Link to="/" className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                <img 
+                  src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                  alt={BRANDING.appName}
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent hidden sm:inline leading-none">
+                {BRANDING.appName}
               </span>
-            </div>
+            </Link>
           </div>
 
           <div className="hidden lg:flex items-center gap-6">
@@ -103,7 +116,7 @@ export default function AppShell() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Droplets className="h-4 w-4 text-teal-600" />
-              <span>© {new Date().getFullYear()} AquaFlow. All rights reserved.</span>
+              <span>© {new Date().getFullYear()} {BRANDING.appName}. All rights reserved.</span>
             </div>
             <div>
               Built with <span className="text-red-500">♥</span> using{' '}
