@@ -1,0 +1,22 @@
+{
+  "frontend/src/App.tsx": "Main application component with Internet Identity authentication, dedicated /login route, protected route guards, role-based routing using AppRole enum comparisons, error handling for profile fetch failures with AuthProfileLoadErrorScreen, and deterministic routing to /onboarding for users without profiles.",
+  "frontend/src/hooks/useCurrentUser.ts": "React Query hooks for fetching current user profile, role, and admin status with proper actor dependency handling to prevent flash states.",
+  "frontend/src/hooks/useQueries.ts": "React Query mutation hook for saving user profiles with enhanced error handling that displays user-friendly error messages for authorization failures via toast notifications and re-throws errors for component-level handling.",
+  "frontend/src/pages/LoginPage.tsx": "Login page with Internet Identity authentication that redirects authenticated users to /onboarding (no profile) or their correct role dashboard (has profile) after successful login using replace navigation.",
+  "frontend/src/pages/onboarding/CustomerOnboardingPage.tsx": "Customer-specific onboarding flow using AppRole.customer enum value for profile creation, with error handling and navigation to customer dashboard on success.",
+  "frontend/src/pages/onboarding/SalesmanOnboardingPage.tsx": "Salesman-specific onboarding flow using AppRole.salesman enum value for profile creation, with error handling and navigation to salesman dashboard on success.",
+  "frontend/src/pages/onboarding/AdminOnboardingPage.tsx": "Admin-specific onboarding flow using AppRole.admin enum value for profile creation, with authorization warning and error handling that keeps user on page to see errors.",
+  "frontend/src/components/AppShell.tsx": "Responsive app shell with header, navigation, notifications bell, user profile display, logout functionality that clears cache and redirects to /login, and branded footer with caffeine.ai attribution.",
+  "frontend/src/components/NotificationsBell.tsx": "Notifications bell component with unread count badge and popover displaying notification list (mock data, backend integration needed).",
+  "frontend/src/pages/dashboards/CustomerDashboardPage.tsx": "Customer dashboard displaying delivery history, bottle counts, and total price in AED with all numeric values defaulting to 0 and proper currency formatting.",
+  "frontend/src/pages/dashboards/SalesmanDashboardPage.tsx": "Salesman dashboard with delivery creation form, recent deliveries table, and customer requests view with all numeric inputs defaulting to 0 and proper validation.",
+  "frontend/src/pages/dashboards/AdminDashboardPage.tsx": "Admin dashboard with comprehensive stats in AED, date filtering, and tabbed views for customers, deliveries, messages, and requests with all numeric values defaulting to 0.",
+  "frontend/src/pages/ReportsPage.tsx": "Reports page offering role-specific PDF report generation with AED currency formatting and all mock numeric values defaulting to 0.",
+  "frontend/src/features/reports/pdfGenerator.ts": "Client-side PDF generation utility creating HTML-based reports with AquaFlow branding, Dubai UAE location, date ranges, data tables, and signature sections.",
+  "frontend/src/index.css": "Global styles with teal/aqua water-inspired OKLCH color system for light and dark modes, avoiding default blue/purple palette.",
+  "frontend/index.html": "HTML entry point with AquaFlow favicon, title, and meta description.",
+  "frontend/tailwind.config.js": "Tailwind configuration with extended theme for AquaFlow brand colors, Inter font family, and custom utilities.",
+  "frontend/src/pages/onboarding/RoleSelectionPage.tsx": "Role selection screen that collects user name and immediately saves profile with selected role (Customer/Salesman/Admin), handling admin rejection errors inline while keeping user on page to choose another role, then navigating to correct dashboard on success.",
+  "frontend/src/utils/currency.ts": "Currency formatting utility providing formatAED and formatAEDRate functions to consistently display amounts in AED across the application.",
+  "frontend/src/components/AuthProfileLoadErrorScreen.tsx": "Error screen component displayed when profile loading fails during authentication, showing user-friendly error messages with retry and logout actions to recover from profile fetch errors."
+}

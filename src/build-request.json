@@ -1,0 +1,102 @@
+{
+  "kind": "build_request",
+  "title": "Fix infinite “Loading AquaFlow…” by rebuilding login→role selection→profile save routing",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-17",
+      "text": "Eliminate the infinite “Loading AquaFlow…” screen after Internet Identity login by ensuring the app always exits the loading state and routes the user deterministically based on: (1) authenticated identity presence and (2) whether a user profile exists.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-3",
+          "recent-messages-4"
+        ],
+        "quotes": [
+          "It is stuck it's just showing loading aquaflow",
+          "Do you want me to rebuild the onboarding flow so that:\n\n• After login, the app ALWAYS sends you to Role Selection\n• After choosing Customer / Salesman / Admin, it IMMEDIATELY saves your profile\n• Then it loads the correct dashboard"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After a successful Internet Identity login, the app does not remain on “Loading AquaFlow…” indefinitely.",
+        "If the caller has no saved profile, the user is shown Role Selection (not a blank screen) within a reasonable time after login completes.",
+        "If any profile-fetch error occurs, the user sees a clear error state with a way to recover (e.g., retry profile load and/or log out), rather than being stuck on a spinner."
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Change post-login routing so that after Internet Identity login completes, users without a saved profile are routed to the dedicated role selection route (/onboarding) rather than relying on the index route (/).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-4",
+          "recent-messages-5"
+        ],
+        "quotes": [
+          "After login, the app ALWAYS sends you to Role Selection",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When identity becomes available and no profile exists, navigation goes to /onboarding.",
+        "Users with an existing profile are routed directly to the correct role dashboard (/dashboard/customer | /dashboard/salesman | /dashboard/admin)."
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Update the role selection flow so that choosing Customer/Salesman/Admin immediately attempts to create/save a user profile (using the selected role) and then routes to the correct dashboard when save succeeds.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-4",
+          "recent-messages-5"
+        ],
+        "quotes": [
+          "After choosing Customer / Salesman / Admin, it IMMEDIATELY saves your profile\n• Then it loads the correct dashboard",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Selecting Customer or Salesman on Role Selection triggers a save profile mutation immediately and, on success, routes to the matching dashboard.",
+        "If Admin is selected but the backend rejects self-assignment, the UI shows a clear error (English) and does not get stuck loading; the user remains able to choose another role.",
+        "After the immediate-save flow completes successfully, subsequent profile fetches return the saved profile and the app renders the authenticated AppShell experience."
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "text": "Adjust backend profile retrieval behavior so an authenticated (non-anonymous) caller who has not yet created a profile can safely check for a profile without causing an authorization trap that prevents the frontend from completing the login/onboarding routing.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages-3",
+          "recent-messages-4",
+          "recent-messages-5"
+        ],
+        "quotes": [
+          "It is stuck it's just showing loading aquaflow",
+          "The app shows “Loading AquaFlow…” when either the identity or the user profile never finishes loading.",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling getCallerUserProfile for an authenticated (non-anonymous) user with no saved profile returns null (or an equivalent non-trapping response) so the frontend can route to role selection.",
+        "Profile creation via saveCallerUserProfile continues to prevent anonymous callers and continues to prevent unauthorized self-assignment of the Admin role.",
+        "The frontend can complete the sequence: login → check profile (null) → role selection → save profile → check profile (exists) without trapping/looping."
+      ]
+    }
+  ],
+  "constraints": [
+    "Respect the single-actor backend architecture: all Motoko logic remains in backend/main.mo (add backend/migration.mo only if state changes require it).",
+    "Do not edit frontend files in immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, and anything under frontend/src/components/ui. Compose around them instead.",
+    "Use English for all user-facing UI text involved in the updated login/onboarding/error states."
+  ],
+  "nonGoals": [
+    "Do not add new roles beyond Customer/Salesman/Admin.",
+    "Do not introduce third-party authentication providers beyond Internet Identity.",
+    "Do not implement real-time websockets/chat; focus only on fixing the stuck loading and onboarding/profile-save routing reliability."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

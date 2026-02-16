@@ -1,0 +1,69 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix infinite loading by deterministic post-login routing and immediate role-based profile save",
+  "requirements": [
+    {
+      "id": "REQ-17",
+      "summary": "Ensure the app always exits the post-login loading state and shows deterministic routing or a recoverable error state based on identity + profile existence.",
+      "acceptanceCriteria": [
+        "After a successful Internet Identity login, the app does not remain on “Loading AquaFlow…” indefinitely.",
+        "If the caller has no saved profile, the user is shown Role Selection (not a blank screen) within a reasonable time after login completes.",
+        "If any profile-fetch error occurs, the user sees a clear error state with a way to recover (e.g., retry profile load and/or log out), rather than being stuck on a spinner."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Update RootComponent and routing guards to (a) avoid indefinite \"Loading AquaFlow...\" by adding a bounded loading fallback, (b) surface a clear English error UI when getCallerUserProfile fails (with Retry + Logout actions), and (c) deterministically continue routing once identity is available and the profile query is fetched (including the null-profile case). Use the authorization component’s frontend guidance for dependency-aware profile loading state (actor + query) and for handling backend trap errors gracefully; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
+          "operation": "create",
+          "description": "Create a small reusable error screen component (English UI text) used during auth/profile bootstrap that shows: a failure message, the underlying error string (sanitized), and buttons for Retry profile load and Logout (clearing cached queries). Ensure it can be rendered from App.tsx without editing immutable hook files. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "summary": "Route users without a saved profile to the dedicated /onboarding role-selection route immediately after login, and route users with profiles directly to their role dashboards.",
+      "acceptanceCriteria": [
+        "When identity becomes available and no profile exists, navigation goes to /onboarding.",
+        "Users with an existing profile are routed directly to the correct role dashboard (/dashboard/customer | /dashboard/salesman | /dashboard/admin)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Change post-login navigation so that when identity is present and getCallerUserProfile returns null, the user is navigated to /onboarding (not /). Keep existing dashboard routing for users with an existing profile. Ensure navigation cannot loop between /login and / by using deterministic conditions and (where supported) replace-style navigation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Update ProfileRequiredRoute (and any other redirects for missing profiles) to route to /onboarding instead of /. Ensure index route (/) no longer acts as the primary place where role selection is rendered after login, and that missing-profile access to protected dashboard routes deterministically redirects to /onboarding. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "summary": "Make Role Selection immediately attempt to save a profile with the selected role and route to the correct dashboard on success, while handling admin rejection and other errors without getting stuck.",
+      "acceptanceCriteria": [
+        "Selecting Customer or Salesman on Role Selection triggers a save profile mutation immediately and, on success, routes to the matching dashboard.",
+        "If Admin is selected but the backend rejects self-assignment, the UI shows a clear error (English) and does not get stuck loading; the user remains able to choose another role.",
+        "After the immediate-save flow completes successfully, subsequent profile fetches return the saved profile and the app renders the authenticated AppShell experience."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/onboarding/RoleSelectionPage.tsx",
+          "operation": "modify",
+          "description": "Rebuild RoleSelectionPage to perform the immediate-save flow: collect the minimal required profile fields (including name) on this page, then on role selection call saveCallerUserProfile with the chosen AppRole and name, and navigate to the correct dashboard on success. Provide an English inline error state for rejected admin selection (and other save failures) while keeping the user on role selection and allowing another choice; also show a non-stuck pending state per selection. Use the authorization component’s frontend guidance for calling saveCallerUserProfile and handling authorization trap errors gracefully; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Adjust the saveCallerUserProfile mutation error mapping so the UI can reliably detect/display an English, user-actionable message specifically for admin self-assignment rejection (and general auth errors) without leaving the page in a loading state. Keep query invalidation for ['currentUserProfile'] on success so subsequent profile loads resolve to the saved profile. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

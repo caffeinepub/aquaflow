@@ -1,0 +1,65 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-eliminate-the-infinite-loading-aquaflow-screen-after-internet-identity-login-by-ensuring-the-app-always-exits-the-loading-state-and-routes-the-user-deterministically-based-on-1-authenticated-identity-presence-and-2-whether-a-user-profile-exists",
+      "featureTitle": "Eliminate the infinite “Loading AquaFlow…” screen after Internet Identity login by ensuring the app always exits the loading state and routes the user deterministically based on: (1) authenticated identity presence and (2) whether a user profile exists.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/AuthProfileLoadErrorScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-17"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-change-post-login-routing-so-that-after-internet-identity-login-completes-users-without-a-saved-profile-are-routed-to-the-dedicated-role-selection-route-onboarding-rather-than-relying-on-the-index-route",
+      "featureTitle": "Change post-login routing so that after Internet Identity login completes, users without a saved profile are routed to the dedicated role selection route (/onboarding) rather than relying on the index route (/).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/LoginPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-18"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-role-selection-flow-so-that-choosing-customer-salesman-admin-immediately-attempts-to-create-save-a-user-profile-using-the-selected-role-and-then-routes-to-the-correct-dashboard-when-save-succeeds",
+      "featureTitle": "Update the role selection flow so that choosing Customer/Salesman/Admin immediately attempts to create/save a user profile (using the selected role) and then routes to the correct dashboard when save succeeds.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/onboarding/RoleSelectionPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-19"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 9,
+  "summary": "AquaFlow: full-stack responsive web app for a water supply company with secure authentication and role-based access (Customer, Salesman, Admin), dashboards for deliveries/sales/messaging, real-time cross-panel updates, notifications, and professionally formatted PDF report generation.",
+  "architectural_notes": [
+    "Use a modern web stack: React/Next.js frontend; Node.js/Express or Django backend; MySQL/PostgreSQL database.",
+    "Implement secure auth with password hashing and JWT or server sessions; enforce RBAC via authorization middleware.",
+    "Model relational data with clear foreign keys between users/customers, deliveries, messages, and bottle/sales records.",
+    "Cross-panel instant updates imply real-time or near-real-time sync (e.g., WebSockets/SSE or polling).",
+    "All printable reports must be generated strictly as professionally formatted PDFs including logo, date range, totals, and signature section.",
+    "App should use AED as the currency (Dubai, UAE) instead of Rs for all price displays and calculations.",
+    "Set numeric form fields/default values to 0 where applicable; users will manually input values rather than relying on auto-filled defaults."
+  ],
+  "known_issues": [
+    "Users cannot choose a role (Customer/Salesman/Admin) during onboarding/signup.",
+    "User signup is not working / sign-up flow is blocked.",
+    "Prices are displayed in Rs instead of AED for the Dubai (UAE) deployment.",
+    "Default values are not set to 0; fields require manual input but do not initialize correctly.",
+    "Login feature is missing or not working as expected (user requested adding login).",
+    "Role selection still does not work; user is forced into Customer role on login despite role selection feature.",
+    "App gets stuck on “Loading AquaFlow…” after login (identity/profile load never completes; onboarding/profile save likely looping)."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-implement-secure-authentication-using-internet-identity-and-add-role-based-access-control-for-three-roles-customer-salesman-admin-including-separate-role-specific-onboarding-flows-that-create-a-user-profile-after-internet-identity-login-and-enforce-authorization-on-all-protected-views-and-backend-methods",
+      "title": "Implement secure authentication using Internet Identity and add role-based access control for three roles (Customer, Salesman, Admin), including separate role-specific onboarding flows that create a user profile after Internet Identity login and enforce authorization on all protected views and backend methods.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-customer-dashboard-ui-to-display-delivery-status-number-of-bottles-delivered-returned-bottles-failed-returns-unreturned-bottles-additional-bottle-requests-and-total-price-auto-calculated-as-delivered-quantity-x-bottle-rate-allow-customers-to-update-additional-bottle-requirements-report-unreturned-failed-returns-and-send-messages-to-customer-care-that-are-visible-to-admin",
+      "title": "Build the Customer dashboard UI to display: delivery status, number of bottles delivered, returned bottles, failed returns/unreturned bottles, additional bottle requests, and total price auto-calculated as (delivered quantity x bottle rate); allow customers to update additional bottle requirements, report unreturned/failed returns, and send messages to customer care that are visible to Admin.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-salesman-dashboard-ui-to-create-and-update-delivery-records-including-customer-name-identity-delivery-status-delivered-bottle-count-returned-bottle-count-failed-returns-additional-bottles-supplied-and-remarks-and-view-customers-additional-bottle-requests",
+      "title": "Build the Salesman dashboard UI to: create and update delivery records including customer name/identity, delivery status, delivered bottle count, returned bottle count, failed returns, additional bottles supplied, and remarks; and view customers’ additional bottle requests.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-admin-dashboard-ui-to-provide-full-control-views-of-customers-deliveries-sales-data-customer-messages-additional-bottle-requests-failed-returns-remarks-and-reviews-include-advanced-filtering-by-date-range-presets-daily-weekly-monthly-and-automatic-total-sales-calculations",
+      "title": "Build the Admin dashboard UI to provide full control views of customers, deliveries, sales data, customer messages, additional bottle requests, failed returns, remarks, and reviews; include advanced filtering by date range presets (daily, weekly, monthly) and automatic total sales calculations.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-notification-system-for-delivery-status-updates-and-other-relevant-changes-e-g-additional-bottle-request-updates-that-is-visible-per-role-notifications-must-be-persisted-and-retrievable-with-an-unread-read-state",
+      "title": "Implement a notification system for delivery/status updates and other relevant changes (e.g., additional bottle request updates) that is visible per role; notifications must be persisted and retrievable, with an unread/read state.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-download-professionally-formatted-pdf-reports-for-customer-weekly-monthly-and-admin-daily-sales-monthly-sales-customer-reports-complete-analytics-pdfs-must-include-company-logo-date-range-totals-and-a-signature-section-in-a-structured-layout",
+      "title": "Generate and download professionally formatted PDF reports for: Customer (weekly/monthly) and Admin (daily sales, monthly sales, customer reports, complete analytics). PDFs must include company logo, date range, totals, and a signature section in a structured layout.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-clean-modern-responsive-aquaflow-branded-ui-and-apply-it-consistently-across-all-pages-auth-onboarding-dashboards-tables-forms-reports-screens-with-a-coherent-visual-theme-avoid-blue-purple-by-default",
+      "title": "Create a clean, modern, responsive AquaFlow-branded UI and apply it consistently across all pages (auth/onboarding, dashboards, tables, forms, reports screens) with a coherent visual theme (avoid blue/purple by default).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-onboarding-role-selection-step-so-a-newly-authenticated-user-can-choose-to-onboard-as-customer-salesman-or-admin-admin-option-may-be-shown-but-must-clearly-indicate-it-can-be-restricted-instead-of-always-being-forced-into-customer-onboarding",
+      "title": "Add an onboarding role selection step so a newly authenticated user can choose to onboard as Customer, Salesman, or Admin (Admin option may be shown but must clearly indicate it can be restricted), instead of always being forced into Customer onboarding.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-signup-onboarding-flow-so-authenticated-users-can-successfully-create-save-their-user-profile-after-logging-in-with-internet-identity",
+      "title": "Fix the signup/onboarding flow so authenticated users can successfully create (save) their user profile after logging in with Internet Identity.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-change-all-displayed-currency-from-inr-rs-to-aed-and-ensure-all-price-rate-displays-use-aed-consistently-across-dashboards-and-any-report-pdf-ui",
+      "title": "Change all displayed currency from INR/Rs (₹) to AED and ensure all price/rate displays use AED consistently across dashboards and any report/PDF UI.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-initialize-numeric-form-fields-and-numeric-summary-values-to-0-by-default-so-users-start-from-zero-and-manually-input-values-as-needed",
+      "title": "Initialize numeric form fields and numeric summary values to 0 by default so users start from zero and manually input values as needed.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-app-role-serialization-deserialization-so-the-selected-role-customer-salesman-admin-is-saved-and-later-read-consistently-and-the-app-does-not-fall-back-to-customer-due-to-an-unrecognized-role-value",
+      "title": "Fix app role serialization/deserialization so the selected role (Customer/Salesman/Admin) is saved and later read consistently, and the app does not fall back to Customer due to an unrecognized role value.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-authenticated-users-without-a-saved-user-profile-always-land-on-the-role-selection-screen-and-can-navigate-to-all-onboarding-pages-rather-than-being-routed-into-the-customer-experience-by-default",
+      "title": "Ensure authenticated users without a saved user profile always land on the role selection screen (and can navigate to all onboarding pages) rather than being routed into the Customer experience by default.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-clear-login-routing-behavior-provide-a-dedicated-login-route-and-redirect-unauthenticated-users-to-login-when-they-attempt-to-access-protected-routes-dashboards-reports-onboarding",
+      "title": "Implement a clear login routing behavior: provide a dedicated /login route and redirect unauthenticated users to /login when they attempt to access protected routes (dashboards, reports, onboarding).",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-eliminate-the-infinite-loading-aquaflow-screen-after-internet-identity-login-by-ensuring-the-app-always-exits-the-loading-state-and-routes-the-user-deterministically-based-on-1-authenticated-identity-presence-and-2-whether-a-user-profile-exists",
+      "title": "Eliminate the infinite “Loading AquaFlow…” screen after Internet Identity login by ensuring the app always exits the loading state and routes the user deterministically based on: (1) authenticated identity presence and (2) whether a user profile exists.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-change-post-login-routing-so-that-after-internet-identity-login-completes-users-without-a-saved-profile-are-routed-to-the-dedicated-role-selection-route-onboarding-rather-than-relying-on-the-index-route",
+      "title": "Change post-login routing so that after Internet Identity login completes, users without a saved profile are routed to the dedicated role selection route (/onboarding) rather than relying on the index route (/).",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-role-selection-flow-so-that-choosing-customer-salesman-admin-immediately-attempts-to-create-save-a-user-profile-using-the-selected-role-and-then-routes-to-the-correct-dashboard-when-save-succeeds",
+      "title": "Update the role selection flow so that choosing Customer/Salesman/Admin immediately attempts to create/save a user profile (using the selected role) and then routes to the correct dashboard when save succeeds.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Set up AquaFlow project with modern full-stack architecture (React/Next.js frontend, Node/Express or Django backend, MySQL/PostgreSQL database) and AquaFlow branding (clean modern responsive UI).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Implement secure authentication with separate login/signup flows and role-based access control for Customer, Salesman, and Admin (password hashing, JWT/session auth, authorization middleware).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Design database schema and relationships for users, deliveries, bottle counts (delivered/returned/failed returns), additional bottle requests, messages, remarks, reviews, and sales totals with input validation.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Customer dashboard: view delivery status, delivered/returned/failed counts, additional bottle requests, and auto-calculated total price (quantity x bottle rate); update additional bottle requirements; report unreturned bottles; message customer care (visible to Admin).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Salesman dashboard: update delivery records (customer name, status, delivered/returned/failed counts, additional bottles supplied, remarks) and view customer additional bottle requests; ensure updates reflect instantly in Customer and Admin panels.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Admin dashboard: full control views for customers, deliveries, sales data, messages, additional bottle requests, failed returns, remarks, reviews; advanced date filtering (daily/weekly/monthly) and automatic total sales calculations.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Notification system for delivery/status updates across roles.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Generate and download professionally formatted PDF reports with company logo, date range, totals, and signature section (Customer weekly/monthly; Admin daily/monthly sales, customer reports, complete analytics).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Implement RESTful APIs with validation to support dashboards, messaging, deliveries, reporting, and real-time synchronization between roles.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Create backend data models and persistence for AquaFlow including: users (profile + role), customers, delivery records (status, delivered/returned/failed return counts, additional bottles supplied, remarks), additional bottle requests, customer care messages, reviews, and bottle pricing/rate; enforce input validation and maintain correct relationships between customers and deliveries.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Make profile creation and subsequent profile retrieval reliable by ensuring a newly onboarded user can immediately fetch their profile after save (no authorization trap loops).",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Fix infinite “Loading AquaFlow…” state by rebuilding onboarding routing: after login always route to Role Selection, immediately save selected role/profile, then load the correct dashboard (avoid identity/profile load loops).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Adjust backend profile retrieval behavior so an authenticated (non-anonymous) caller who has not yet created a profile can safely check for a profile without causing an authorization trap that prevents the frontend from completing the login/onboarding routing.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "AquaFlow",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
