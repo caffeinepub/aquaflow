@@ -68,48 +68,12 @@ export default function ReportsPage() {
                 className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Generate PDF
+                Generate Report
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Report Information</CardTitle>
-          <CardDescription>What's included in your reports</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <h3 className="font-semibold flex items-center gap-2">
-                <FileText className="h-4 w-4 text-teal-600" />
-                Report Contents
-              </h3>
-              <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
-                <li>Blue Nile company logo and branding</li>
-                <li>Explicit date range for the report period</li>
-                <li>Detailed delivery and sales data</li>
-                <li>Computed totals and summaries</li>
-                <li>Professional signature section</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Download className="h-4 w-4 text-teal-600" />
-                Download Format
-              </h3>
-              <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
-                <li>Professionally formatted PDF layout</li>
-                <li>Structured tables and clear headings</li>
-                <li>Print-ready quality</li>
-                <li>Consistent spacing and typography</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

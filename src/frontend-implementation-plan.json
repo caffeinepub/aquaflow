@@ -1,69 +1,52 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Deterministic auth/profile bootstrap timeout and recovery to prevent infinite loading",
+  "title": "Rollback frontend to Version 6 experience (remove Version 8 branding/assets and restore Version 6 UI)",
   "requirements": [
     {
-      "id": "REQ-32",
-      "summary": "Add a deterministic timeout to the root auth bootstrap loading screen and provide an automatic recovery UI with Retry and Clear Session actions.",
+      "id": "REQ-35",
+      "summary": "Restore the production-served frontend to match Version 6 (remove Version 8 UI/branding/assets references and ensure a hard refresh loads the Version 6 experience).",
       "acceptanceCriteria": [
-        "If the app remains in the global loading state for longer than a fixed threshold (e.g., 10–15 seconds), it must automatically switch to a non-loading recovery screen instead of spinning forever.",
-        "The recovery screen must include at least: (1) a \"Retry\" action that re-attempts profile loading, and (2) a \"Log out\" / \"Clear session\" action that clears the Internet Identity session and returns the user to /login.",
-        "User-facing text on the loading/recovery screen must be in English and must use the current branding name \"Blue Nile\".",
-        "A user who previously experienced an infinite loading screen can always reach either the Login page or the Onboarding page using the provided recovery actions (no dead-end state)."
+        "Production no longer serves the Draft Version 8 build.",
+        "Production serves the same frontend and backend code/state behavior as Version 6.",
+        "A hard refresh in the browser loads the Version 6 experience (no cached Version 8 assets being referenced).",
+        "No new functional or UI changes are introduced beyond restoring Version 6."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
-          "operation": "create",
-          "description": "Create a dedicated bootstrap recovery screen shown after a global bootstrap timeout. Use shadcn-ui composed components (e.g., Card, Alert, Button) to display English messaging referencing the Blue Nile branding, plus actions: Retry (invalidate/refetch current user profile query) and Clear session (call Internet Identity clear, clear React Query cache, and navigate to /login). Verify the component's usage instructions before implementing."
+          "path": "frontend/src/config/branding.ts",
+          "operation": "modify",
+          "description": "Revert centralized branding constants to the exact Version 6 values (app name/tagline/location/description) so all user-facing copy matches Version 6."
+        },
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Revert Version 8 document metadata (title/description/favicon) back to the Version 6 values and ensure the favicon references the Version 6 generated asset under frontend/public/assets/generated/ (e.g., switch away from blue-nile icon if Version 6 used a different one)."
+        },
+        {
+          "path": "frontend/src/components/AppShell.tsx",
+          "operation": "modify",
+          "description": "Revert header/navigation/footer visuals to Version 6, including restoring Version 6 logo/icon references by updating image sources to the correct generated assets (e.g., use frontend/public/assets/generated/aquaflow-icon.dim_256x256.png instead of any Version 8 blue-nile assets if Version 6 used AquaFlow)."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Revert the login page presentation to the Version 6 design by restoring Version 6 background/header imagery and icon references (e.g., switch to frontend/public/assets/generated/aquaflow-header-bg.dim_1600x400.png and frontend/public/assets/generated/aquaflow-icon.dim_256x256.png if those were the Version 6 assets), ensuring no Version 8 assets are referenced."
+        },
+        {
+          "path": "frontend/src/features/reports/pdfGenerator.ts",
+          "operation": "modify",
+          "description": "Revert report branding to Version 6 by restoring the Version 6 logo/icon asset used for embedding (update fetch() path away from any Version 8 blue-nile asset to the Version 6 generated asset, e.g., frontend/public/assets/generated/aquaflow-icon.dim_256x256.png) and ensure it uses the Version 6 BRANDING values."
+        },
+        {
+          "path": "frontend/src/pages/ReportsPage.tsx",
+          "operation": "modify",
+          "description": "Revert any Version 8 report-screen copy that names Version 8 branding (e.g., references to “Blue Nile company logo and branding”) back to the Version 6 wording consistent with frontend/src/config/branding.ts."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update the RootComponent global bootstrap flow (\"Loading Blue Nile...\") to start a deterministic timer (10–15s) whenever it enters the global loading state; when the timer elapses, automatically render AuthBootstrapRecoveryScreen instead of spinning indefinitely. Wire Retry to reset the timeout state and trigger a fresh profile-load attempt; wire Clear session to always navigate the user to /login. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-33",
-      "summary": "Ensure authenticated bootstrap routing shows an actionable error/retry state when the actor/profile query is not ready or fails, instead of blank/stuck UI.",
-      "acceptanceCriteria": [
-        "When the user is authenticated but the profile cannot be fetched (e.g., backend not reachable, actor not initialized), the app must show an error state (e.g., reuse the existing profile-load error screen pattern) with a retry option rather than staying on an endless spinner.",
-        "Retry must trigger a fresh attempt to fetch the caller profile (e.g., invalidate/refetch the current user profile query).",
-        "Logging out from this error state must clear the identity and leave the user on /login (or able to navigate to /login) without re-entering the same stuck loading state immediately."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-          "operation": "modify",
-          "description": "Enhance the existing profile-load error UI so both Retry and Log Out are fully actionable from any bootstrap failure state: Retry should invalidate/refetch the current user profile query; Log Out should call Internet Identity clear, clear React Query cache, and navigate to /login to avoid returning to a blank/stuck state. Keep all user-facing text in English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Harden routing components (RootComponent/ProtectedRoute/ProfileRequiredRoute/IndexComponent) so they never return a blank null screen during authenticated bootstrap uncertainty (e.g., actor not yet available). Reuse AuthProfileLoadErrorScreen (or the new AuthBootstrapRecoveryScreen for timeouts) to show actionable Retry/Log Out UI rather than endless spinners or empty renders. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-34",
-      "summary": "Standardize current-user profile query state reporting so the router/bootstrap can deterministically choose between loading, onboarding redirect, app shell, and error recovery.",
-      "acceptanceCriteria": [
-        "The bootstrap layer (App routing/root component) can reliably distinguish between: (1) still initializing Internet Identity, (2) authenticated + profile fetch in progress, (3) authenticated + no profile exists, (4) authenticated + profile exists, and (5) authenticated + profile fetch failed.",
-        "Authenticated users with no saved profile are redirected to /onboarding once the system has enough information to decide (no infinite loops).",
-        "Authenticated users with an existing profile are routed into the authenticated app shell/dashboards once fetched (no infinite loops)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useCurrentUser.ts",
-          "operation": "modify",
-          "description": "Update useGetCallerUserProfile to expose consistent readiness/phase flags to the bootstrap layer (e.g., actor dependency readiness, fetch-in-progress vs not-started, fetched-success with null vs non-null, and failure). Ensure the hook remains compatible with React Query and avoids oscillation by clearly separating actor readiness from profile fetch completion. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Refactor bootstrap decision-making to use the enhanced useGetCallerUserProfile state so it can deterministically select among: II initializing, authenticated+fetching, authenticated+no profile (redirect /onboarding), authenticated+has profile (render AppShell), and authenticated+failed (render error screen). Ensure redirects happen only once the system is ready to decide to prevent infinite loops. Verify the component's usage instructions before implementing."
+          "description": "Revert routing/bootstrap UI behavior to match Version 6 (including any Version 8-only recovery/loading/error screen flows) while keeping the app’s authenticated navigation consistent with Version 6 and ensuring no new functional changes beyond the rollback."
         }
       ]
     }

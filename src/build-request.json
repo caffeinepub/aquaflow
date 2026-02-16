@@ -1,77 +1,35 @@
 {
   "kind": "build_request",
-  "title": "Fix the post-deployment infinite loading screen by adding deterministic timeouts, recovery UI, and safer auth/profile bootstrapping",
+  "title": "Revert production deployment from Version 8 to Version 6",
   "priority": "high",
   "requirements": [
     {
-      "id": "REQ-32",
-      "text": "Prevent the app from getting stuck indefinitely on the global loading screen by adding a deterministic timeout and recovery actions in the root auth bootstrap flow (the screen that renders \"Loading Blue Nile...\").",
-      "target": "frontend",
+      "id": "REQ-35",
+      "text": "Rollback/revert the live (production) deployment from Draft Version 8 to Version 6 so that end users are served the Version 6 build.",
+      "target": "unknown",
       "source": {
         "messageIds": [
-          "recent-messages-4",
-          "recent-messages-6",
-          "recent-messages-9"
+          "recent-messages-6"
         ],
         "quotes": [
-          "It's stuck at loading page",
-          "Fix it",
-          "Yes"
+          "Let's revert to version 6"
         ]
       },
       "acceptanceCriteria": [
-        "If the app remains in the global loading state for longer than a fixed threshold (e.g., 10–15 seconds), it must automatically switch to a non-loading recovery screen instead of spinning forever.",
-        "The recovery screen must include at least: (1) a \"Retry\" action that re-attempts profile loading, and (2) a \"Log out\" / \"Clear session\" action that clears the Internet Identity session and returns the user to /login.",
-        "User-facing text on the loading/recovery screen must be in English and must use the current branding name \"Blue Nile\".",
-        "A user who previously experienced an infinite loading screen can always reach either the Login page or the Onboarding page using the provided recovery actions (no dead-end state)."
-      ]
-    },
-    {
-      "id": "REQ-33",
-      "text": "Make the authenticated bootstrap routing resilient when the user is authenticated but the backend actor/profile query is not available yet, so the UI does not remain blank or stuck and instead displays an actionable error/retry state.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-4"
-        ],
-        "quotes": [
-          "It's stuck at loading page"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When the user is authenticated but the profile cannot be fetched (e.g., backend not reachable, actor not initialized), the app must show an error state (e.g., reuse the existing profile-load error screen pattern) with a retry option rather than staying on an endless spinner.",
-        "Retry must trigger a fresh attempt to fetch the caller profile (e.g., invalidate/refetch the current user profile query).",
-        "Logging out from this error state must clear the identity and leave the user on /login (or able to navigate to /login) without re-entering the same stuck loading state immediately."
-      ]
-    },
-    {
-      "id": "REQ-34",
-      "text": "Update the current-user profile query plumbing so it reports fetch readiness and failures consistently to the router/bootstrap layer, enabling the UI to decide between loading, onboarding redirect, app shell, and error recovery without oscillation.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-4"
-        ],
-        "quotes": [
-          "It's stuck at loading page"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The bootstrap layer (App routing/root component) can reliably distinguish between: (1) still initializing Internet Identity, (2) authenticated + profile fetch in progress, (3) authenticated + no profile exists, (4) authenticated + profile exists, and (5) authenticated + profile fetch failed.",
-        "Authenticated users with no saved profile are redirected to /onboarding once the system has enough information to decide (no infinite loops).",
-        "Authenticated users with an existing profile are routed into the authenticated app shell/dashboards once fetched (no infinite loops)."
+        "Production no longer serves the Draft Version 8 build.",
+        "Production serves the same frontend and backend code/state behavior as Version 6.",
+        "A hard refresh in the browser loads the Version 6 experience (no cached Version 8 assets being referenced).",
+        "No new functional or UI changes are introduced beyond restoring Version 6."
       ]
     }
   ],
   "constraints": [
-    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose these components, do not modify their source).",
-    "Keep all user-facing text in English.",
-    "Maintain the single-actor Motoko backend architecture (no additional backend services)."
+    "Do not introduce any new functionality or UI changes; this request is strictly a rollback to Version 6.",
+    "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Domain/DNS/hosting configuration changes.",
-    "Changing Internet Identity implementation details inside the immutable useInternetIdentity hook.",
-    "Implementing new product features unrelated to resolving the infinite loading state (e.g., new dashboards, new data models)."
+    "Fixing the loading screen or onboarding issues in this same change (only revert to Version 6).",
+    "Any rebrand, UI polish, or feature additions beyond what exists in Version 6."
   ],
   "imageRequirements": {
     "required": [],

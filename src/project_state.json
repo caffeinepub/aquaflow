@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 19,
   "summary": "Rebrand AquaFlow to “blue nile” across the app, including app name, logo, and all visible branding.",
   "architectural_notes": [
     "Use a modern web stack: React/Next.js frontend; Node.js/Express or Django backend; MySQL/PostgreSQL database.",
@@ -271,6 +271,14 @@
         "REQ-34"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-rollback-revert-the-live-production-deployment-from-draft-version-8-to-version-6-so-that-end-users-are-served-the-version-6-build",
+      "title": "Rollback/revert the live (production) deployment from Draft Version 8 to Version 6 so that end users are served the Version 6 build.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -373,6 +381,12 @@
     {
       "id": "AR-22",
       "summary": "Change the app/domain name to Blue Nile (update domain configuration/DNS/hosting settings so the product is accessible under the Blue Nile domain).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Rollback/revert production deployment from Version 8 to Version 6.",
       "reqIds": [],
       "status": "pending"
     }

@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/assets/generated/blue-nile-header-bg.dim_1600x400.png')] bg-cover bg-center opacity-5 dark:opacity-10"></div>
+      <div className="absolute inset-0 bg-[url('/assets/generated/aquaflow-header-bg.dim_1600x400.png')] bg-cover bg-center opacity-5 dark:opacity-10"></div>
       
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-teal-100 dark:border-teal-900">
         <CardHeader className="text-center space-y-6 pb-4">
@@ -57,7 +57,7 @@ export default function LoginPage() {
             <div className="relative inline-flex items-center justify-center">
               <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 flex items-center justify-center shadow-lg border border-teal-100 dark:border-teal-800">
                 <img 
-                  src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                  src="/assets/generated/aquaflow-icon.dim_256x256.png" 
                   alt={BRANDING.appName}
                   className="w-16 h-16 object-contain"
                 />

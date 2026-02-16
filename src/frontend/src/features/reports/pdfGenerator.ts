@@ -10,7 +10,7 @@ interface ReportData {
 // Convert image to base64 data URL for embedding in standalone HTML
 async function getLogoDataUrl(): Promise<string> {
   try {
-    const response = await fetch('/assets/generated/blue-nile-icon.dim_256x256.png');
+    const response = await fetch('/assets/generated/aquaflow-icon.dim_256x256.png');
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

@@ -1,54 +1,116 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T08:50:13.964Z",
-  "summary": "Core infinite-loading fixes appear implemented via a deterministic bootstrap timeout (12s), a recovery screen with Retry + Clear Session/Log Out actions, and enhanced current-user profile query state flags for more reliable routing decisions. However, the diff also includes multiple unrelated UI/features changes (dashboards, reports/PDF, notifications mock, styling/rebranding polish) that were not requested for this build scope.",
-  "missing_requirements": [],
-  "hallucinated_features": [
+  "generatedAt": "2026-02-16T09:01:17.946Z",
+  "summary": "The diff shows multiple frontend/backend feature and UI/branding changes (e.g., AquaFlow branding config, reports PDF generation, notifications UI, access-control/profile logic changes). It does not provide evidence of a production rollback to Version 6, nor does it meet the constraint of introducing no new functionality/UI changes for a strict rollback.",
+  "missing_requirements": [
     {
-      "description": "Added/modified notification bell UI with unread count and popover using mock data (explicitly notes backend integration needed).",
-      "reason": "Not requested by REQ-32/33/34 and constitutes new product UI unrelated to resolving the infinite loading state.",
+      "id": "REQ-35",
+      "requirement": "Rollback/revert the live (production) deployment from Draft Version 8 to Version 6 so that end users are served the Version 6 build.",
+      "reason": "The diff only shows code changes adding/modifying app functionality and branding; it contains no evidence of reverting to Version 6 or changes to deployment/version pinning to ensure production serves Version 6.",
       "evidence": [
-        "frontend-file-summaries.txt (\"frontend/src/components/NotificationsBell.tsx\": notifications bell component with mock data)"
+        "backend/main.mo",
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/src/pages/ReportsPage.tsx",
+        "frontend/src/features/reports/pdfGenerator.ts",
+        "frontend/src/config/branding.ts",
+        "frontend/index.html",
+        "project_state.json",
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Expanded/changed dashboards (Customer/Salesman/Admin) with AED formatting, default numeric values, new UI sections/forms/tables.",
-      "reason": "Not requested by REQ-32/33/34; these are new/altered product surfaces unrelated to auth bootstrap infinite loading.",
+      "id": "REQ-35",
+      "requirement": "A hard refresh in the browser loads the Version 6 experience (no cached Version 8 assets being referenced).",
+      "reason": "No evidence of asset versioning/caching rollback controls (e.g., build hash changes, asset manifest/version pinning, cache-busting headers) is present in the diff summary; only general frontend code/HTML changes are shown.",
       "evidence": [
-        "frontend-file-summaries.txt (CustomerDashboardPage/SalesmanDashboardPage/AdminDashboardPage summaries)"
+        "frontend/index.html",
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Added/modified Reports feature including client-side PDF generation and report page changes.",
-      "reason": "Not requested by REQ-32/33/34; new/expanded reporting is unrelated to fixing infinite loading bootstrap.",
+      "id": "REQ-35",
+      "requirement": "No new functional or UI changes are introduced beyond restoring Version 6.",
+      "reason": "The diff includes multiple apparent new UI components/features (reports generation, notifications bell, branding centralization, styled AppShell/Login changes), which is contrary to a strict rollback-only change.",
       "evidence": [
-        "frontend-file-summaries.txt (\"frontend/src/pages/ReportsPage.tsx\", \"frontend/src/features/reports/pdfGenerator.ts\")"
-      ]
-    },
-    {
-      "description": "Global styling/theme palette changes (water-inspired OKLCH colors) and other rebranding/polish changes (favicon, login hero section, logo sizing, footer attribution).",
-      "reason": "Not requested by REQ-32/33/34; these are broad UI/branding changes outside the stated goal of fixing infinite loading.",
-      "evidence": [
-        "frontend-file-summaries.txt (\"frontend/src/index.css\", \"frontend/index.html\", \"frontend/src/pages/LoginPage.tsx\", \"frontend/src/components/AppShell.tsx\")"
-      ]
-    },
-    {
-      "description": "URL parameter utilities changes/additions (parsing hash/query, persisting to sessionStorage, clearing hash params).",
-      "reason": "Not requested by REQ-32/33/34 and not directly tied (in the provided diff evidence) to the infinite-loading bootstrap fix.",
-      "evidence": [
-        "frontend/src/utils/urlParams.ts"
+        "frontend/src/pages/ReportsPage.tsx",
+        "frontend/src/features/reports/pdfGenerator.ts",
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/src/config/branding.ts",
+        "frontend-file-summaries.txt"
       ]
     }
   ],
-  "confidence": 0.74,
+  "hallucinated_features": [
+    {
+      "description": "Centralized AquaFlow branding configuration and branded UI usage (app name/tagline/location/description).",
+      "reason": "BuildRequest requires a strict rollback to Version 6 with no new functionality or UI changes; it does not request branding centralization or rebranding work.",
+      "evidence": [
+        "frontend/src/config/branding.ts",
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/src/features/reports/pdfGenerator.ts",
+        "frontend/index.html"
+      ]
+    },
+    {
+      "description": "Reports page UI with role-specific report options and a 'Generate Report' workflow using mock data.",
+      "reason": "Not requested in the rollback-only BuildRequest; constitutes new/changed functionality/UI.",
+      "evidence": [
+        "frontend/src/pages/ReportsPage.tsx"
+      ]
+    },
+    {
+      "description": "Client-side 'PDF' report generator producing downloadable standalone HTML with embedded base64 logo and formatted tables/signature section.",
+      "reason": "Not requested for the rollback; adds/changes reporting functionality.",
+      "evidence": [
+        "frontend/src/features/reports/pdfGenerator.ts"
+      ]
+    },
+    {
+      "description": "Notifications bell UI component and inclusion in the app shell (with unread badge/popover per the file summaries).",
+      "reason": "Not requested in the rollback-only BuildRequest; adds/changes UI/feature surface.",
+      "evidence": [
+        "frontend/src/components/AppShell.tsx",
+        "frontend-file-summaries.txt"
+      ]
+    },
+    {
+      "description": "Significant UI restyling of AppShell and Login page (gradient backgrounds, logo assets, layout changes).",
+      "reason": "BuildRequest explicitly forbids new functionality or UI changes and asks only for a rollback.",
+      "evidence": [
+        "frontend/src/components/AppShell.tsx",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/index.html"
+      ]
+    },
+    {
+      "description": "Backend authorization/user profile management logic (roles, profile save/view rules, traps/messages).",
+      "reason": "Not requested as part of a rollback-only deployment revert; represents functional/backend behavior changes rather than reverting to Version 6.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Rebrand-related project state update indicating 'Rebrand AquaFlow to “blue nile” across the app'.",
+      "reason": "Explicitly out of scope per Non-goals (no rebrand/feature additions beyond Version 6).",
+      "evidence": [
+        "project_state.json"
+      ]
+    }
+  ],
+  "confidence": 0.78,
   "changed_files": [
+    "backend/main.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
-    "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-    "frontend/src/hooks/useCurrentUser.ts",
-    "frontend/src/utils/urlParams.ts",
+    "frontend/index.html",
+    "frontend/src/components/AppShell.tsx",
+    "frontend/src/config/branding.ts",
+    "frontend/src/features/reports/pdfGenerator.ts",
+    "frontend/src/pages/LoginPage.tsx",
+    "frontend/src/pages/ReportsPage.tsx",
     "project_state.json"
   ]
 }

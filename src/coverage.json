@@ -1,66 +1,51 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T08:50:13.968Z",
+  "generatedAt": "2026-02-16T09:01:17.952Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-32",
-        "summary": "Prevent the app from getting stuck indefinitely on the global loading screen by adding a deterministic timeout and recovery actions in the root auth bootstrap flow (the screen that renders \"Loading Blue Nile...\").",
+        "id": "REQ-35",
+        "summary": "Rollback/revert the live (production) deployment from Draft Version 8 to Version 6 so that end users are served the Version 6 build.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
+          "frontend/src/config/branding.ts",
+          "frontend/index.html",
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/features/reports/pdfGenerator.ts",
+          "frontend/src/pages/ReportsPage.tsx",
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-33",
-        "summary": "Make the authenticated bootstrap routing resilient when the user is authenticated but the backend actor/profile query is not available yet, so the UI does not remain blank or stuck and instead displays an actionable error/retry state.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-34",
-        "summary": "Update the current-user profile query plumbing so it reports fetch readiness and failures consistently to the router/bootstrap layer, enabling the UI to decide between loading, onboarding redirect, app shell, and error recovery without oscillation.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useCurrentUser.ts",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useCurrentUser.ts",
-          "frontend/src/App.tsx"
+          "frontend/src/config/branding.ts",
+          "frontend/index.html",
+          "frontend/src/components/AppShell.tsx",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/features/reports/pdfGenerator.ts",
+          "frontend/src/pages/ReportsPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AuthBootstrapRecoveryScreen.tsx",
-    "frontend/src/components/AuthProfileLoadErrorScreen.tsx",
-    "frontend/src/hooks/useCurrentUser.ts",
-    "frontend/src/utils/urlParams.ts",
+    "frontend/index.html",
+    "frontend/src/components/AppShell.tsx",
+    "frontend/src/config/branding.ts",
+    "frontend/src/features/reports/pdfGenerator.ts",
+    "frontend/src/pages/LoginPage.tsx",
+    "frontend/src/pages/ReportsPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

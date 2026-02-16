@@ -59,7 +59,7 @@ export default function AppShell() {
                 <div className="flex items-center gap-3 mb-6">
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
                     <img 
-                      src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                      src="/assets/generated/aquaflow-icon.dim_256x256.png" 
                       alt={BRANDING.appName}
                       className="w-10 h-10 object-contain"
                     />
@@ -75,7 +75,7 @@ export default function AppShell() {
             <Link to="/" className="flex items-center gap-3">
               <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
                 <img 
-                  src="/assets/generated/blue-nile-icon.dim_256x256.png" 
+                  src="/assets/generated/aquaflow-icon.dim_256x256.png" 
                   alt={BRANDING.appName}
                   className="w-8 h-8 object-contain"
                 />

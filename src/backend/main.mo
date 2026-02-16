@@ -1,16 +1,15 @@
 import Map "mo:core/Map";
-import Array "mo:core/Array";
 import List "mo:core/List";
 import Set "mo:core/Set";
+import Array "mo:core/Array";
 import Iter "mo:core/Iter";
 import Order "mo:core/Order";
-import Time "mo:core/Time";
 import Text "mo:core/Text";
 import Option "mo:core/Option";
-import Runtime "mo:core/Runtime";
+import AccessControl "authorization/access-control";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
-import AccessControl "authorization/access-control";
+import Runtime "mo:core/Runtime";
 
 actor {
   // STRUCTURE DEFINITIONS
@@ -45,10 +44,10 @@ actor {
   let userProfiles = Map.empty<Principal, UserProfile>();
   let customersState = Set.empty<Customer.Customer>();
 
+  var bottleRate = 0;
+
   // Authorization
   include MixinAuthorization(accessControlState);
-
-  var bottleRate = 0;
 
   // AUTHORIZATION HELPERS
 
@@ -104,6 +103,7 @@ actor {
     };
   };
 
+  // Check if the principal is anonymous
   func isAnonymous(caller : Principal) : Bool {
     caller.isAnonymous();
   };
